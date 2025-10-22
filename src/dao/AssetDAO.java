@@ -9,7 +9,7 @@ public class AssetDAO {
 
     public boolean addAsset(Asset a) {
         String sql = "INSERT INTO asset (asset_id, name, type, room_id, value) VALUES (?, ?, ?, ?, ?)";
-        try (Connection con = DBConnection.getConnection(); // Lấy kết nối từ DBConnection
+        try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
           ps.setString(1, a.getId());
             ps.setString(2, a.getName());
@@ -70,6 +70,53 @@ public class AssetDAO {
             }
         return list;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  public List<Asset> searchAsset(String keyword) {
         List<Asset> list = new ArrayList<>();
         String sql = "SELECT asset_id, name, type, room_id, value FROM asset WHERE name LIKE ? OR type LIKE ?";

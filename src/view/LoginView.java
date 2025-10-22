@@ -18,7 +18,7 @@ public class LoginView extends JFrame {
         txtUser = new JTextField(12);
         txtPass = new JPasswordField(12);
         btnLogin = new JButton("Login");
-        setSize(240,130);
+        setSize(260,148);
 
         rowLog.add(new JLabel("Username:"));
         rowLog.add(txtUser);
@@ -43,7 +43,7 @@ public class LoginView extends JFrame {
             User u = new User(txtUser.getText(), new String(txtPass.getPassword()));
 
             if (!control.openConnection()) {
-                showMessage("Không thể kết nối tới server!");
+                showMessage("Cannot connect to server!!");
                 return;
             }
 
@@ -51,27 +51,27 @@ public class LoginView extends JFrame {
             Object resp = control.receiveResponse();
 
             if (resp == null) {
-                showMessage("Không nhận được phản hồi từ server!");
+                showMessage("No response from server!!");
                 control.closeConnection();
                 return;
             }
 
             if (resp instanceof User) {
-                showMessage("Đăng nhập thành công!");
+                showMessage("Login success!!");
                 control.closeConnection();
                 User loggedUser = (User) resp;
                 new MainFrame(loggedUser).setVisible(true);
                 dispose();
-            } else if ("Invalid credentials".equals(resp)) {
-                showMessage("Sai tên đăng nhập hoặc mật khẩu!");
+            } else if ("InvalidCredentials".equals(resp)) {
+                showMessage("Invalid username or password!!");
                 control.closeConnection();
             } else {
-                showMessage("Phản hồi không xác định: " + resp);
+                showMessage("Unknown response: " + resp);
                 control.closeConnection();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            showMessage("Lỗi: " + ex.getMessage());
+            showMessage("Error: " + ex.getMessage());
             if (control != null) control.closeConnection();
         }
     }

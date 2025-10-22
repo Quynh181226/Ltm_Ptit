@@ -28,106 +28,106 @@ public class ServerThread extends Thread {
                         User u = (User) data;
                         UserDAO userDAO = new UserDAO();
                         User auth = userDAO.authenticate(u);
-                        response = (auth != null) ? auth : "Invalid credentials";
+                        response = (auth != null) ? auth : "InvalidCredentials";
                         break;
                     }
 
                     case "AddAsset": {
                         Asset a = (Asset) data;
                         boolean ok = new AssetDAO().addAsset(a);
-                        response = ok ? "SUCCESS" : "FAIL";
+                        response = ok ? "Success" : "Fail";
                         break;
                     }
 
-                    case "UPDATE_ASSET": {
+                    case "UpdateAsset": {
                         Asset a = (Asset) data;
                         boolean ok = new AssetDAO().updateAsset(a);
-                        response = ok ? "SUCCESS" : "FAIL";
+                        response = ok ? "Success" : "Fail";
                         break;
                     }
 
-                    case "DEL_ASSET": {
+                    case "DeleteAsset": {
                         String assetId = (String) data;
                         boolean ok = new AssetDAO().deleteAsset(assetId);
-                        response = ok ? "SUCCESS" : "FAIL";
+                        response = ok ? "Success" : "Fail";
                         break;
                     }
 
-                    case "GET_ALL_ASSETS": {
+                    case "GetAllAssets": {
                         List<Asset> list = new AssetDAO().getAllAssets();
                         response = list;
                         break;
                     }
 
-                    case "SEARCH_ASSET": {
+                    case "SearchAsset": {
                         String keyword = (String) data;
                         List<Asset> list = new AssetDAO().searchAsset(keyword);
                         response = list;
                         break;
                     }
 
-                    case "SEARCH_ASSET_BY_ROOM": {
+                    case "SearchAssetByRoom": {
                         String roomId = (String) data;
                         List<Asset> list = new AssetDAO().searchByRoom(roomId);
                         response = list;
                         break;
                     }
 
-                    case "SEARCH_ASSET_BY_VALUE": {
+                    case "SearchAssetByValue": {
                         double[] range = (double[]) data;
                         List<Asset> list = new AssetDAO().searchByValueRange(range[0], range[1]);
                         response = list;
                         break;
                     }
 
-                    case "GET_ASSETS_BY_ROOM": {
+                    case "GetAssetsByRoom": {
                         String roomId = (String) data;
                         List<Asset> list = new AssetDAO().getAssetsByRoom(roomId);
                         response = list;
                         break;
                     }
 
-                    case "ADD_ROOM": {
+                    case "AddRoom": {
                         Room r = (Room) data;
                         boolean ok = new RoomDAO().addRoom(r);
-                        response = ok ? "SUCCESS" : "FAIL";
+                        response = ok ? "Success" : "Fail";
                         break;
                     }
 
-                    case "GET_ALL_ROOMS": {
+                    case "GetAllRooms": {
                         List<Room> list = new RoomDAO().getAllRooms();
                         response = list;
                         break;
                     }
 
-                    case "DEL_ROOM": {
+                    case "DeleteRoom": {
                         String roomId = (String) data;
                         boolean ok = new RoomDAO().deleteRoom(roomId);
-                        response = ok ? "SUCCESS" : "CANNOT_DELETE";
+                        response = ok ? "Success" : "CannotDelete";
                         break;
                     }
 
-                    case "UPDATE_ROOM": {
+                    case "UpdateRoom": {
                         Room room = (Room) data;
                         RoomDAO roomDAO = new RoomDAO();
-                        response = roomDAO.updateRoom(room) ? "SUCCESS" : "Failed to update room";
+                        response = roomDAO.updateRoom(room) ? "Success" : "FailedToUpdateRoom";
                         break;
                     }
 
-                    case "ROOM_ASSET_COUNT": {
+                    case "RoomAssetCount": {
                         List<String[]> stats = new RoomDAO().getRoomAssetCount();
                         response = stats;
                         break;
                     }
 
                     default:
-                        response = "Unknown command: " + command;
+                        response = "UnknownCommand: " + command;
                         break;
                 }
 
             } catch (Exception daoEx) {
                 daoEx.printStackTrace();
-                response = "Server processing error: " + daoEx.getMessage();
+                response = "ServerProcessingError: " + daoEx.getMessage();
             }
 
             oos.writeObject(response);

@@ -107,11 +107,11 @@ public class AssetPanel extends JPanel {
     private void addAsset() {
         try {
             if (txtId.getText().trim().isEmpty()) {
-                showMessage("ID không được rỗng!");
+                showMessage("ID cannot be empty!!");
                 return;
             }
             if (txtName.getText().trim().isEmpty()) {
-                showMessage("Name không được rỗng!");
+                showMessage("Name cannot be empty!!");
                 return;
             }
 
@@ -119,16 +119,16 @@ public class AssetPanel extends JPanel {
             try {
                 value = Double.parseDouble(txtValue.getText().trim());
                 if (value < 0) {
-                    showMessage("Value phải >= 0!");
+                    showMessage("Value must be >= 0!!");
                     return;
                 }
             } catch (NumberFormatException e) {
-                showMessage("Value phải là số hợp lệ!");
+                showMessage("Value must be a valid number!!");
                 return;
             }
 
             if (!control.openConnection()) {
-                showMessage("Không thể kết nối server!");
+                showMessage("Cannot connect to server!!");
                 return;
             }
 
@@ -138,27 +138,27 @@ public class AssetPanel extends JPanel {
             Object res = control.receiveResponse();
             control.closeConnection();
 
-            if (res != null && "SUCCESS".equals(res)) {
-                showMessage("Thêm tài sản thành công!");
+            if (res != null && "Success".equals(res)) {
+                showMessage("Asset added success!!");
                 clearFields();
                 loadAssets();
             } else {
-                showMessage("Thêm thất bại: " + (res != null ? res.toString() : "No response"));
+                showMessage("Failed to add asset: " + (res != null ? res.toString() : "No response"));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            showMessage("Lỗi: " + ex.getMessage());
+            showMessage("Error: " + ex.getMessage());
         }
     }
 
     private void updateAsset() {
         try {
             if (txtId.getText().trim().isEmpty()) {
-                showMessage("ID không được rỗng!");
+                showMessage("ID cannot be empty!!");
                 return;
             }
             if (txtName.getText().trim().isEmpty()) {
-                showMessage("Name không được rỗng!");
+                showMessage("Name cannot be empty!!");
                 return;
             }
 
@@ -166,34 +166,34 @@ public class AssetPanel extends JPanel {
             try {
                 value = Double.parseDouble(txtValue.getText().trim());
                 if (value < 0) {
-                    showMessage("Value phải >= 0!");
+                    showMessage("Value must be >= 0!!");
                     return;
                 }
             } catch (NumberFormatException e) {
-                showMessage("Value phải là số hợp lệ!");
+                showMessage("Value must be a valid number!!");
                 return;
             }
 
             if (!control.openConnection()) {
-                showMessage("Không thể kết nối server!");
+                showMessage("Cannot connect to server!!");
                 return;
             }
 
             Asset a = new Asset(txtId.getText().trim(), txtName.getText().trim(),
                     txtType.getText().trim(), txtRoom.getText().trim(), value);
-            control.sendRequest("UPDATE_ASSET", a);
+            control.sendRequest("UpdateAsset", a);
             Object res = control.receiveResponse();
             control.closeConnection();
 
-            if (res != null && "SUCCESS".equals(res)) {
-                showMessage("Cập nhật thành công!");
+            if (res != null && "Success".equals(res)) {
+                showMessage("Asset updated success!!");
                 loadAssets();
             } else {
-                showMessage("Cập nhật thất bại: " + (res != null ? res.toString() : "No response"));
+                showMessage("Failed to update asset: " + (res != null ? res.toString() : "No response"));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            showMessage("Lỗi: " + ex.getMessage());
+            showMessage("Error: " + ex.getMessage());
         }
     }
 
@@ -201,45 +201,45 @@ public class AssetPanel extends JPanel {
         try {
             String id = txtId.getText().trim();
             if (id.isEmpty()) {
-                showMessage("Vui lòng chọn tài sản để xóa!");
+                showMessage("Please select an asset to delete!!");
                 return;
             }
 
             int confirm = JOptionPane.showConfirmDialog(this,
-                    "Bạn có chắc muốn xóa tài sản " + id + "?",
-                    "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+                    "Are you sure you want to delete asset " + id + "?",
+                    "Confirm Delete", JOptionPane.YES_NO_OPTION);
             if (confirm != JOptionPane.YES_OPTION) return;
 
             if (!control.openConnection()) {
-                showMessage("Không thể kết nối server!");
+                showMessage("Cannot connect to server!!");
                 return;
             }
 
-            control.sendRequest("DEL_ASSET", id);
+            control.sendRequest("DeleteAsset", id);
             Object res = control.receiveResponse();
             control.closeConnection();
 
-            if (res != null && "SUCCESS".equals(res)) {
-                showMessage("Xóa thành công!");
+            if (res != null && "Success".equals(res)) {
+                showMessage("Asset deleted success!!");
                 clearFields();
                 loadAssets();
             } else {
-                showMessage("Xóa thất bại: " + (res != null ? res.toString() : "No response"));
+                showMessage("Failed to delete asset: " + (res != null ? res.toString() : "No response"));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            showMessage("Lỗi: " + ex.getMessage());
+            showMessage("Error: " + ex.getMessage());
         }
     }
 
     private void loadAssets() {
         try {
             if (!control.openConnection()) {
-                showMessage("Không thể kết nối server!");
+                showMessage("Cannot connect to server!!");
                 return;
             }
 
-            control.sendRequest("GET_ALL_ASSETS", null);
+            control.sendRequest("GetAllAssets", null);
             Object res = control.receiveResponse();
             control.closeConnection();
 
@@ -249,7 +249,7 @@ public class AssetPanel extends JPanel {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            showMessage("Lỗi tải danh sách: " + ex.getMessage());
+            showMessage("Error loading assets: " + ex.getMessage());
         }
     }
 
@@ -257,16 +257,16 @@ public class AssetPanel extends JPanel {
         try {
             String roomId = txtSearchRoom.getText().trim();
             if (roomId.isEmpty()) {
-                showMessage("Vui lòng nhập Room ID!");
+                showMessage("Please enter Room ID!");
                 return;
             }
 
             if (!control.openConnection()) {
-                showMessage("Không thể kết nối server!");
+                showMessage("Cannot connect to server!!");
                 return;
             }
 
-            control.sendRequest("SEARCH_ASSET_BY_ROOM", roomId);
+            control.sendRequest("SearchAssetByRoom", roomId);
             Object res = control.receiveResponse();
             control.closeConnection();
 
@@ -274,11 +274,11 @@ public class AssetPanel extends JPanel {
                 List<Asset> list = (List<Asset>) res;
                 updateTable(list);
             } else {
-                showMessage("Không tìm thấy tài sản trong phòng " + roomId);
+                showMessage("No assets found in room " + roomId);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            showMessage("Lỗi tìm kiếm: " + ex.getMessage());
+            showMessage("Search error: " + ex.getMessage());
         }
     }
 
@@ -289,21 +289,21 @@ public class AssetPanel extends JPanel {
                 min = Double.parseDouble(txtMinValue.getText().trim());
                 max = Double.parseDouble(txtMaxValue.getText().trim());
                 if (min > max) {
-                    showMessage("Min phải <= Max!");
+                    showMessage("Min must be <= Max!!");
                     return;
                 }
             } catch (NumberFormatException e) {
-                showMessage("Min/Max phải là số hợp lệ!");
+                showMessage("Min/Max must be valid numbers!!");
                 return;
             }
 
             if (!control.openConnection()) {
-                showMessage("Không thể kết nối server!");
+                showMessage("Cannot connect to server!!");
                 return;
             }
 
             double[] range = {min, max};
-            control.sendRequest("SEARCH_ASSET_BY_VALUE", range);
+            control.sendRequest("SearchAssetByValue", range);
             Object res = control.receiveResponse();
             control.closeConnection();
 
@@ -311,17 +311,16 @@ public class AssetPanel extends JPanel {
                 List<Asset> list = (List<Asset>) res;
                 updateTable(list);
             } else {
-                showMessage("Không tìm thấy tài sản trong khoảng giá trị!");
+                showMessage("No assets found in the value range!!");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            showMessage("Lỗi tìm kiếm: " + ex.getMessage());
+            showMessage("Search error: " + ex.getMessage());
         }
     }
 
     private void updateTable(List<Asset> list) {
         model.setRowCount(0);
-        // --- SỬA Ở ĐÂY ---
         for (Asset a : list) {
             model.addRow(new Object[]{a.getId(), a.getName(), a.getType(), a.getRoomId(), a.getValue(), null});
         }
@@ -414,48 +413,48 @@ public class AssetPanel extends JPanel {
     private void updateAssetFromTable(String id, String name, String type, String room, double value) {
         try {
             if (!control.openConnection()) {
-                showMessage("Không thể kết nối server!");
+                showMessage("Cannot connect to server!!");
                 return;
             }
             Asset a = new Asset(id, name, type, room, value);
-            control.sendRequest("UPDATE_ASSET", a);
+            control.sendRequest("UpdateAsset", a);
             Object res = control.receiveResponse();
             control.closeConnection();
-            if (res != null && "SUCCESS".equals(res)) {
-                showMessage("Cập nhật thành công!");
+            if (res != null && "Success".equals(res)) {
+                showMessage("Asset updated success!!");
                 loadAssets();
             } else {
-                showMessage("Cập nhật thất bại: " + (res != null ? res.toString() : "No response"));
+                showMessage("Failed to update asset: " + (res != null ? res.toString() : "No response"));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            showMessage("Lỗi: " + ex.getMessage());
+            showMessage("Error: " + ex.getMessage());
         }
     }
 
     private void deleteAssetFromTable(String id) {
         try {
             int confirm = JOptionPane.showConfirmDialog(this,
-                    "Bạn có chắc muốn xóa tài sản " + id + "?",
-                    "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+                    "Are you sure you want to delete asset " + id + "?",
+                    "Confirm Delete", JOptionPane.YES_NO_OPTION);
             if (confirm != JOptionPane.YES_OPTION) return;
 
             if (!control.openConnection()) {
-                showMessage("Không thể kết nối server!");
+                showMessage("Cannot connect to server!!");
                 return;
             }
-            control.sendRequest("DEL_ASSET", id);
+            control.sendRequest("DeleteAsset", id);
             Object res = control.receiveResponse();
             control.closeConnection();
-            if (res != null && "SUCCESS".equals(res)) {
-                showMessage("Xóa thành công!");
+            if (res != null && "Success".equals(res)) {
+                showMessage("Asset deleted success!!");
                 loadAssets();
             } else {
-                showMessage("Xóa thất bại: " + (res != null ? res.toString() : "No response"));
+                showMessage("Failed to delete asset: " + (res != null ? res.toString() : "No response"));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            showMessage("Lỗi: " + ex.getMessage());
+            showMessage("Error: " + ex.getMessage());
         }
     }
 }

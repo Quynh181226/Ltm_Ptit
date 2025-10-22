@@ -22,7 +22,24 @@ public class DBConnection {
         return DriverManager.getConnection(URL, USER, PASS);
     }
 
-    // Tiện ích đóng kết nối an toàn
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static void closeQuietly(AutoCloseable... resources) {
         for (AutoCloseable r : resources) {
             if (r != null) {

@@ -26,7 +26,6 @@ public class RoomPanel extends JPanel {
         txtName = new JTextField(10);
         txtDesc = new JTextField(15);
         btnAdd = new JButton("Add");
-        // --- SỬA Ở ĐÂY ---
         // btnUpdate = new JButton("Update");
         // btnDelete = new JButton("Delete");
         btnViewAssets = new JButton("View Assets");
@@ -36,13 +35,11 @@ public class RoomPanel extends JPanel {
         top.add(new JLabel("Name:")); top.add(txtName);
         top.add(new JLabel("Desc:")); top.add(txtDesc);
         top.add(btnAdd);
-        // --- SỬA Ở ĐÂY ---
         // top.add(btnUpdate); top.add(btnDelete);
         top.add(btnViewAssets); top.add(btnStats);
         add(top, BorderLayout.NORTH);
 
         // Room table
-        // --- SỬA Ở ĐÂY ---
         modelRoom = new DefaultTableModel(new String[]{"ID", "Name", "Description", "Action"}, 0);
         tblRoom = new JTable(modelRoom);
 
@@ -52,11 +49,10 @@ public class RoomPanel extends JPanel {
 
 //        add(tblRoom, BorderLayout.CENTER);
         add(new JScrollPane(tblRoom), BorderLayout.CENTER);
-        tblRoom.setBackground(new Color(245, 245, 245)); // Màu xám nhẹ
+        tblRoom.setBackground(new Color(245, 245, 245));
 
-        // --- SỬA Ở ĐÂY ---
         // Tùy chỉnh cột Action
-        TableColumn actionColumn = tblRoom.getColumnModel().getColumn(3); // Cột thứ 4 (index 3)
+        TableColumn actionColumn = tblRoom.getColumnModel().getColumn(3);
         actionColumn.setCellRenderer(new ButtonRenderer());
         actionColumn.setCellEditor(new ButtonEditor(new JCheckBox(), tblRoom, modelRoom));
 
@@ -74,67 +70,67 @@ public class RoomPanel extends JPanel {
     private void addRoom() {
         try {
             if (txtId.getText().trim().isEmpty()) {
-                showMessage("ID không được rỗng!");
+                showMessage("ID cannot be empty!!");
                 return;
             }
             if (txtName.getText().trim().isEmpty()) {
-                showMessage("Name không được rỗng!");
+                showMessage("Name cannot be empty!!");
                 return;
             }
 
             if (!control.openConnection()) {
-                showMessage("Server connect err!!");
+                showMessage("Cannot connect to server!!");
                 return;
             }
 
             Room r = new Room(txtId.getText().trim(), txtName.getText().trim(), txtDesc.getText().trim());
-            control.sendRequest("ADD_ROOM", r);
+            control.sendRequest("AddRoom", r);
             Object res = control.receiveResponse();
             control.closeConnection();
 
-            if (res != null && "SUCCESS".equals(res)) {
-                showMessage("Thêm phòng thành công!");
+            if (res != null && "Success".equals(res)) {
+                showMessage("Room added success!!");
                 clearFields();
                 loadRooms();
             } else {
-                showMessage("Thêm thất bại: " + (res != null ? res.toString() : "No response"));
+                showMessage("Failed to add room: " + (res != null ? res.toString() : "No response"));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            showMessage("Lỗi: " + ex.getMessage());
+            showMessage("Error: " + ex.getMessage());
         }
     }
 
     private void updateRoom() {
         try {
             if (txtId.getText().trim().isEmpty()) {
-                showMessage("ID không được rỗng!");
+                showMessage("ID cannot be empty!!");
                 return;
             }
             if (txtName.getText().trim().isEmpty()) {
-                showMessage("Name không được rỗng!");
+                showMessage("Name cannot be empty!!");
                 return;
             }
 
             if (!control.openConnection()) {
-                showMessage("Không thể kết nối server!");
+                showMessage("Cannot connect to server!!");
                 return;
             }
 
             Room r = new Room(txtId.getText().trim(), txtName.getText().trim(), txtDesc.getText().trim());
-            control.sendRequest("UPDATE_ROOM", r);
+            control.sendRequest("UpdateRoom", r);
             Object res = control.receiveResponse();
             control.closeConnection();
 
-            if (res != null && "SUCCESS".equals(res)) {
-                showMessage("Cập nhật phòng thành công!");
+            if (res != null && "Success".equals(res)) {
+                showMessage("Room updated success!!");
                 loadRooms();
             } else {
-                showMessage("Cập nhật thất bại: " + (res != null ? res.toString() : "Unknown error"));
+                showMessage("Failed to update room: " + (res != null ? res.toString() : "Unknown error"));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            showMessage("Lỗi: " + ex.getMessage());
+            showMessage("Error: " + ex.getMessage());
         }
     }
 
@@ -142,37 +138,37 @@ public class RoomPanel extends JPanel {
         try {
             int row = tblRoom.getSelectedRow();
             if (row < 0) {
-                showMessage("Vui lòng chọn một phòng!");
+                showMessage("Please select a room!!");
                 return;
             }
 
             String roomId = modelRoom.getValueAt(row, 0).toString();
             int confirm = JOptionPane.showConfirmDialog(this,
-                    "Bạn có chắc muốn xóa phòng " + roomId + "?\n(Lưu ý: Phòng có tài sản sẽ không xóa được)",
-                    "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+                    "Are you sure you want to delete room " + roomId + "?\n(Note: Rooms with assets cannot be deleted)",
+                    "Confirm Delete", JOptionPane.YES_NO_OPTION);
             if (confirm != JOptionPane.YES_OPTION) return;
 
             if (!control.openConnection()) {
-                showMessage("Không thể kết nối server!");
+                showMessage("Cannot connect to server!!");
                 return;
             }
 
-            control.sendRequest("DEL_ROOM", roomId);
+            control.sendRequest("DeleteRoom", roomId);
             Object res = control.receiveResponse();
             control.closeConnection();
 
             String msg = res != null ? res.toString() : "No response";
-            if ("CANNOT_DELETE".equals(msg)) {
-                showMessage("Không thể xóa: phòng còn tài sản!");
-            } else if ("SUCCESS".equals(msg)) {
-                showMessage("Xóa phòng thành công!");
+            if ("CannotDelete".equals(msg)) {
+                showMessage("Cannot delete: room contains assets!!");
+            } else if ("Success".equals(msg)) {
+                showMessage("Room deleted success!!");
                 loadRooms();
             } else {
-                showMessage("Xóa thất bại: " + msg);
+                showMessage("Failed to delete room: " + msg);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            showMessage("Lỗi: " + ex.getMessage());
+            showMessage("Error: " + ex.getMessage());
         }
     }
 
@@ -180,24 +176,24 @@ public class RoomPanel extends JPanel {
         try {
             int row = tblRoom.getSelectedRow();
             if (row < 0) {
-                showMessage("Vui lòng chọn một phòng!");
+                showMessage("Please select a room!!");
                 return;
             }
 
             String roomId = modelRoom.getValueAt(row, 0).toString();
 
             if (!control.openConnection()) {
-                showMessage("Không thể kết nối server!");
+                showMessage("Cannot connect to server!!");
                 return;
             }
 
-            control.sendRequest("GET_ASSETS_BY_ROOM", roomId);
+            control.sendRequest("GetAssetsByRoom", roomId);
             Object res = control.receiveResponse();
             control.closeConnection();
 
             if (res instanceof List) {
                 List<Asset> list = (List<Asset>) res;
-                // Tạo popup dialog
+                // Create popup dialog
                 JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Assets in Room " + roomId, true);
                 dialog.setLayout(new BorderLayout());
                 dialog.setSize(400, 300);
@@ -216,65 +212,64 @@ public class RoomPanel extends JPanel {
 
                 dialog.setVisible(true);
             } else {
-                showMessage("Không tải được danh sách tài sản!");
+                showMessage("Failed to load asset list!!");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            showMessage("Lỗi tải tài sản: " + ex.getMessage());
+            showMessage("Error loading assets: " + ex.getMessage());
         }
     }
 
     private void showStats() {
         try {
             if (!control.openConnection()) {
-                showMessage("Không thể kết nối server!");
+                showMessage("Cannot connect to server!!");
                 return;
             }
 
-            control.sendRequest("ROOM_ASSET_COUNT", null);
+            control.sendRequest("RoomAssetCount", null);
             Object res = control.receiveResponse();
             control.closeConnection();
 
             if (res instanceof List) {
                 List<String[]> data = (List<String[]>) res;
-                StringBuilder sb = new StringBuilder("THỐNG KÊ PHÒNG - SỐ TÀI SẢN:\n\n");
+                StringBuilder sb = new StringBuilder("ROOM - ASSET COUNT STATISTICS:\n\n");
                 for (String[] row : data) {
                     sb.append("ID: ").append(row[0])
                             .append(" | Name: ").append(row[1])
-                            .append(" | Des: ").append(row[2]).append(" tài sản\n");
+                            .append(" | Des: ").append(row[2]).append(" assets\n");
                 }
-                showMessage(sb.toString(), "Thống kê", JOptionPane.INFORMATION_MESSAGE);
+                showMessage(sb.toString(), "Statistics", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                showMessage("Không tải được thống kê!!");
+                showMessage("Failed to load statistics!!");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            showMessage("Lỗi thống kê: " + ex.getMessage());
+            showMessage("Error loading statistics: " + ex.getMessage());
         }
     }
 
     private void loadRooms() {
         try {
             if (!control.openConnection()) {
-                showMessage("Không thể kết nối server!");
+                showMessage("Cannot connect to server!!");
                 return;
             }
 
-            control.sendRequest("GET_ALL_ROOMS", null);
+            control.sendRequest("GetAllRooms", null);
             Object res = control.receiveResponse();
             control.closeConnection();
 
             if (res instanceof List) {
                 List<Room> list = (List<Room>) res;
                 modelRoom.setRowCount(0);
-                // --- SỬA Ở ĐÂY ---
                 for (Room r : list) {
                     modelRoom.addRow(new Object[]{r.getId(), r.getName(), r.getDescription(), null});
                 }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            showMessage("Lỗi tải danh sách phòng: " + ex.getMessage());
+            showMessage("Error loading room list: " + ex.getMessage());
         }
     }
 
@@ -292,7 +287,6 @@ public class RoomPanel extends JPanel {
         JOptionPane.showMessageDialog(this, msg, title, messageType);
     }
 
-    // --- SỬA Ở ĐÂY ---
     // Renderer cho cột Action
     class ButtonRenderer extends JPanel implements TableCellRenderer {
         private JButton btnUpdate = new JButton("Update");
@@ -360,56 +354,54 @@ public class RoomPanel extends JPanel {
         }
     }
 
-    // --- SỬA Ở ĐÂY ---
     private void updateRoomFromTable(String id, String name, String desc) {
         try {
             if (!control.openConnection()) {
-                showMessage("Không thể kết nối server!");
+                showMessage("Cannot connect to server!!");
                 return;
             }
             Room r = new Room(id, name, desc);
-            control.sendRequest("UPDATE_ROOM", r);
+            control.sendRequest("UpdateRoom", r);
             Object res = control.receiveResponse();
             control.closeConnection();
-            if (res != null && "SUCCESS".equals(res)) {
-                showMessage("Cập nhật phòng thành công!");
+            if (res != null && "Success".equals(res)) {
+                showMessage("Room updated success!!");
                 loadRooms();
             } else {
-                showMessage("Cập nhật thất bại: " + (res != null ? res.toString() : "Unknown error"));
+                showMessage("Failed to update room: " + (res != null ? res.toString() : "Unknown error"));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            showMessage("Lỗi: " + ex.getMessage());
+            showMessage("Error: " + ex.getMessage());
         }
     }
 
-    // --- SỬA Ở ĐÂY ---
     private void deleteRoomFromTable(String id) {
         try {
             int confirm = JOptionPane.showConfirmDialog(this,
-                    "Bạn có chắc muốn xóa phòng " + id + "?\n(Lưu ý: Phòng có tài sản sẽ không xóa được)",
-                    "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+                    "Are you sure you want to delete room " + id + "?\n(Note: Rooms with assets cannot be deleted)",
+                    "Confirm Delete", JOptionPane.YES_NO_OPTION);
             if (confirm != JOptionPane.YES_OPTION) return;
 
             if (!control.openConnection()) {
-                showMessage("Không thể kết nối server!");
+                showMessage("Cannot connect to server!!");
                 return;
             }
-            control.sendRequest("DEL_ROOM", id);
+            control.sendRequest("DeleteRoom", id);
             Object res = control.receiveResponse();
             control.closeConnection();
             String msg = res != null ? res.toString() : "No response";
-            if ("CANNOT_DELETE".equals(msg)) {
-                showMessage("Không thể xóa: phòng còn tài sản!");
-            } else if ("SUCCESS".equals(msg)) {
-                showMessage("Xóa phòng thành công!");
+            if ("CannotDelete".equals(msg)) {
+                showMessage("Cannot delete: room contains assets!!");
+            } else if ("Success".equals(msg)) {
+                showMessage("Room deleted success!!");
                 loadRooms();
             } else {
-                showMessage("Xóa thất bại: " + msg);
+                showMessage("Failed to delete room: " + msg);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            showMessage("Lỗi: " + ex.getMessage());
+            showMessage("Error: " + ex.getMessage());
         }
     }
 }

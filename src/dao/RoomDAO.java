@@ -92,6 +92,50 @@ public class RoomDAO {
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public List<String[]> getRoomAssetCount() {
         List<String[]> result = new ArrayList<>();
         String sql = "SELECT r.room_id, r.name, COUNT(a.asset_id) AS asset_count " +

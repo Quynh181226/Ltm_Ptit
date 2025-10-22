@@ -21,6 +21,6 @@ public class UserDAO {
         } catch (SQLException e) {
             System.err.println("Error in UserDAO.authenticate(): " + e.getMessage());
         }
-        return null; // Không tìm thấy
+        return null;
     }
 }

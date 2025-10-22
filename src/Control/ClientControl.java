@@ -1,64 +1,66 @@
-package Control;
-import Model.User;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+package control;
+
+import java.io.*;
 import java.net.Socket;
 
 public class ClientControl {
-    private Socket mySocket;
-    private String serverHost = "localhost";
-    private int serverPort = 7777;
-    
-    public ClientControl(){
-    }
-    
-    public Socket openConnection(){
-    try {
-                mySocket = new Socket(serverHost, serverPort);     
-                if (mySocket==null) System.out.println("Khong the mo ket noi");
-                else System.out.println("Mo ket noi thanh cong");
-            } catch (Exception ex) {
-            ex.printStackTrace();
-                return null;
-            }
-    return mySocket;
-    }
-    
-    public boolean sendData(User user){
+    private Socket socket;
+    private String host = "localhost";
+    private int port = 8080;
+
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
+
+    public boolean openConnection() {
         try {
-                    ObjectOutputStream oos = 
-        new ObjectOutputStream(mySocket.getOutputStream());
-        oos.writeObject(user);
-                } catch (Exception ex) {
-                ex.printStackTrace();
-                    return false;
-                }
-        return true;
-    }
-    
-    public String receiveData(){
-        String result = null;
-        try {
-        ObjectInputStream ois = 
-        new ObjectInputStream(mySocket.getInputStream());
-        Object o = ois.readObject();
-        if(o instanceof String){
-        result = (String)o;
+            socket = new Socket(host, port);
+            oos = new ObjectOutputStream(socket.getOutputStream());
+            ois = new ObjectInputStream(socket.getInputStream());
+//            System.out.println("Server connect");
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
-                } catch (Exception ex) {
-                 ex.printStackTrace();     return null;
-                }
-        return result;
     }
-    
-    public boolean closeConnection(){
+
+    public boolean sendRequest(String command, Object data) {
         try {
-         mySocket.close();
-                } catch (Exception ex) {
-                 ex.printStackTrace();        return false;
-                }
-        return true;
+            oos.writeObject(command);
+            oos.writeObject(data);
+            oos.flush();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    //    public String receiveResponse() {
+//        try {
+//            Object resp = ois.readObject();
+//            if (resp instanceof String) {
+//                return (String) resp;
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+    public Object receiveResponse() {
+        try {
+            return ois.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void closeConnection() {
+        try {
+            if (socket != null) socket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
